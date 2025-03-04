@@ -1,5 +1,5 @@
 # Use the official Node.js Alpine base image
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Install ffmpeg
 RUN apk update && apk add --no-cache ffmpeg && rm -rf /var/cache/apk/*

@@ -2,29 +2,48 @@ import React, { FC, useState, useCallback, HTMLAttributes, forwardRef, CSSProper
 import { DndContext, closestCenter, MouseSensor, TouchSensor, DragOverlay, useSensor, useSensors, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Grid2, Paper } from '@mui/material';
+import { Box, Card, CardActionArea, CardHeader, Grid2, IconButton, Paper, Typography } from '@mui/material';
+import { toolSections } from './Router';
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
 
 const SortableItem = (props: any) => {
 	const { isDragging, attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id });
 
+	const tool = toolSections.flatMap((section) => section.tools).find((tool) => tool.path === props.id);
+	if (!tool) return null;
 	return (
-		<Grid2 size={4} ref={setNodeRef} {...attributes} {...listeners}>
-			<Paper
-				elevation={isDragging ? 6 : 3}
+		<Grid2 size={{ xs: 12, sm: 6, md: 4 }} ref={setNodeRef} {...attributes} {...listeners}>
+			<Card
 				sx={{
 					transform: CSS.Transform.toString(transform),
 					transition: transition || undefined,
 					opacity: isDragging ? 0.5 : 1,
 				}}
 			>
-				{props.id}
-			</Paper>
+				<CardActionArea>
+					<CardHeader
+						title={
+							<Box sx={{ display: 'flex', alignItems: 'center' }}>
+								{tool.icon && <Box sx={{ mr: 1 }}>{tool.icon}</Box>}
+								<Typography variant='h6' gutterBottom>
+									{tool.title}
+								</Typography>
+							</Box>
+						}
+						subheader={
+							<Typography variant='body2' color='textSecondary'>
+								{tool.description}
+							</Typography>
+						}
+					/>
+				</CardActionArea>
+			</Card>
 		</Grid2>
 	);
 };
 
 const App: FC = () => {
-	const [items, setItems] = useState(Array.from({ length: 20 }, (_, i) => (i + 1).toString()));
+	const [items, setItems] = useState(toolSections.flatMap((section) => section.tools).map((tool) => tool.path));
 	const [activeId, setActiveId] = useState<string | number | null>(null);
 	const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 

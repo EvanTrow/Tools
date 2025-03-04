@@ -4,6 +4,8 @@ import axios from 'axios';
 import ytdl from '@distube/ytdl-core';
 import { spawn } from 'child_process';
 import { Writable } from 'stream';
+import { TwitterDL } from 'twitter-downloader';
+import { TwitterDownload } from '../web-app/src/types/DownloadsTypes';
 
 // logging
 const console = createLogger('Downloaders');
@@ -152,6 +154,26 @@ router.post('/youtube', async (req, res) => {
 	} catch (error) {
 		console.error('Error merging video/audio with GPU encoding:', error);
 		return res.status(500).json({ error: 'Internal server error' });
+	}
+});
+
+router.post('/twitter', async (req, res) => {
+	try {
+		const url = req.body?.url as string;
+		if (!url) {
+			return res.status(400).json({ error: 'Missing url parameter' });
+		}
+		console.log('Downloading Twitter video:', url);
+
+		const data = (await TwitterDL(url)).result as TwitterDownload;
+		if (data.media.filter((media) => media.type === 'video').length === 0) {
+			return res.status(400).json({ error: 'No video found in tweet' });
+		}
+
+		res.send(data);
+	} catch (error) {
+		console.error('Error downloading Twitter video:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
 

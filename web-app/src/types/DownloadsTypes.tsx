@@ -47,6 +47,54 @@ export interface TikTokDownload {
 	};
 }
 
+export interface TwitterDownload {
+	id: string;
+	createdAt: string;
+	description: string;
+	languange: string;
+	possiblySensitive: boolean;
+	possiblySensitiveEditable: boolean;
+	isQuoteStatus: boolean;
+	mediaCount: number;
+	author: {
+		username: string;
+		bio: string;
+		possiblySensitive: boolean;
+		verified: boolean;
+		location: string;
+		profileBannerUrl: string;
+		profileImageUrl: string;
+		url: string;
+		statistics: {
+			favoriteCount: number;
+			followersCount: number;
+			friendsCount: number;
+			statusesCount: number;
+			listedCount: number;
+			mediaCount: number;
+		};
+	};
+	statistics: {
+		replieCount: number;
+		retweetCount: number;
+		favoriteCount: number;
+		bookmarkCount: number;
+		viewCount: number;
+	};
+	media: {
+		type: string;
+		expandedUrl: string;
+		cover: string;
+		duration: string;
+		videos: {
+			bitrate: number;
+			content_type: string;
+			quality: string;
+			url: string;
+		}[];
+	}[];
+}
+
 export interface YouTubeDownload {
 	page: string;
 	player_response: PlayerResponse;

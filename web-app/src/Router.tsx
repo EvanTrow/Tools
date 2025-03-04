@@ -4,11 +4,12 @@ import { Route, Routes } from 'react-router-dom';
 import Navigation from './components/navigation/Navigation';
 import Home from './Home'; // Import Home component
 
-import TikTok from './tools/downloader/TikTok';
 import SvgRepo from './components/SvgRepo';
-import { Link, YouTube } from '@mui/icons-material';
+import { Link, Twitter as TwitterIcon, YouTube as YouTubeIcon } from '@mui/icons-material';
 import { SvgIconProps } from '@mui/material';
-import Youtube from './tools/downloader/YouTube';
+import TikTok from './tools/downloader/TikTok';
+import Twitter from './tools/downloader/Twitter';
+import YouTube from './tools/downloader/YouTube';
 import Base64 from './tools/converter/Base64';
 import FileSize from './tools/converter/FileSize';
 import UrlEncoder from './tools/converter/UrlEncoder';
@@ -45,8 +46,8 @@ export const toolSections: ToolSection[] = [
 				pageTitle: 'YouTube Downloader',
 				description: 'Download videos from YouTube',
 				path: '/downloader/youtube',
-				page: Youtube,
-				icon: <YouTube />,
+				page: YouTube,
+				icon: <YouTubeIcon />,
 			},
 			{
 				title: 'TikTok',
@@ -55,6 +56,14 @@ export const toolSections: ToolSection[] = [
 				path: '/downloader/tiktok',
 				page: TikTok,
 				icon: <SvgRepo url='https://www.svgrepo.com/show/473806/tiktok.svg' padding={0.25} />,
+			},
+			{
+				title: 'Twitter',
+				pageTitle: 'Twitter Downloader',
+				description: 'Download videos from Twitter',
+				path: '/downloader/twitter',
+				page: Twitter,
+				icon: <TwitterIcon />,
 			},
 		].sort((a, b) => a.title.localeCompare(b.title)),
 	},
