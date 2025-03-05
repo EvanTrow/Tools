@@ -73,7 +73,7 @@ function Youtube({ tool }: { tool: Tool }) {
 
 	// https://www.youtube.com/watch?v=udO6bDeIhmM
 	return (
-		<Container maxWidth='sm' sx={{ mt: 2 }}>
+		<Container maxWidth='sm'>
 			<ToolTitle tool={tool} />
 			<TextField label='Enter YouTube URL' variant='outlined' fullWidth value={url} onChange={(e) => setUrl(e.target.value)} margin='normal' />
 			<Button variant='contained' color='primary' onClick={handleDownload} disabled={loading} fullWidth>

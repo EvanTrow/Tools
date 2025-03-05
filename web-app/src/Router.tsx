@@ -5,7 +5,7 @@ import Navigation from './components/navigation/Navigation';
 import Home from './Home'; // Import Home component
 
 import SvgRepo from './components/SvgRepo';
-import { Link, Twitter as TwitterIcon, YouTube as YouTubeIcon } from '@mui/icons-material';
+import { Image, Link, Twitter as TwitterIcon, YouTube as YouTubeIcon } from '@mui/icons-material';
 import { SvgIconProps } from '@mui/material';
 import TikTok from './tools/downloader/TikTok';
 import Twitter from './tools/downloader/Twitter';
@@ -14,6 +14,7 @@ import Base64 from './tools/converter/Base64';
 import FileSize from './tools/converter/FileSize';
 import UrlEncoder from './tools/converter/UrlEncoder';
 import UrlParser from './tools/converter/UrlParser';
+import ImageConverter from './tools/converter/ImageConverter';
 import Test from './Test';
 
 export const NotFound = () => {
@@ -79,7 +80,7 @@ export const toolSections: ToolSection[] = [
 				icon: <SvgRepo url='/icons/base64.svg' padding={0.25} cors={false} />,
 			},
 			{
-				title: 'File Size',
+				title: 'File Size Converter',
 				pageTitle: 'File Size Converter',
 				description: 'Convert file sizes between different units',
 				path: '/converter/filesize',
@@ -101,6 +102,14 @@ export const toolSections: ToolSection[] = [
 				path: '/converter/url-parser',
 				page: UrlParser,
 				icon: <SvgRepo url='https://www.svgrepo.com/show/452391/url-parameter.svg' removeColor={['#1F2328']} />,
+			},
+			{
+				title: 'Image Converter',
+				pageTitle: 'Image Converter',
+				description: 'Convert images between different formats',
+				path: '/converter/image-converter',
+				page: ImageConverter,
+				icon: <Image />,
 			},
 		].sort((a, b) => a.title.localeCompare(b.title)),
 	},

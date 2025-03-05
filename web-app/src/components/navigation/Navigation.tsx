@@ -263,7 +263,7 @@ const Navigation: React.FC<{ children: JSX.Element }> = ({ children }) => {
 					<MenuContent toggleDrawer={toggleDrawer} open={open} />
 				</Drawer>
 			)}
-			<Main open={isMobile || open} ref={mainRef}>
+			<Main open={isMobile || open} ref={mainRef} sx={{ pt: 2, pb: 4 }}>
 				<DrawerHeader />
 
 				<ErrorBoundary>{children}</ErrorBoundary>

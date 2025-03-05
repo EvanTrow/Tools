@@ -101,6 +101,7 @@ export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () =
 					>
 						{pinnedTools.map((toolPath) => {
 							const tool = toolSections.flatMap((section) => section.tools).find((t) => t.path === toolPath);
+
 							if (!tool) return null;
 							return (
 								<ListItem key={tool.path} disablePadding sx={{ display: 'block' }}>

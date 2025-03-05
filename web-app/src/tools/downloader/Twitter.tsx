@@ -71,7 +71,7 @@ function Twitter({ tool }: { tool: Tool }) {
 
 	// https://x.com/NoCapMediaa/status/1889570132307153094
 	return (
-		<Container maxWidth='sm' sx={{ mt: 2 }}>
+		<Container maxWidth='sm'>
 			<ToolTitle tool={tool} />
 			<TextField
 				label='Enter Twitter URL'

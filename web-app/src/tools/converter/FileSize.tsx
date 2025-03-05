@@ -101,9 +101,8 @@ function FileSize({ tool }: { tool: Tool }) {
 	};
 
 	return (
-		<Container maxWidth='md' sx={{ mt: 2 }}>
+		<Container maxWidth='md'>
 			<ToolTitle tool={tool} />
-			<Box sx={{ mt: 2 }} />
 			<Grid2 container spacing={2} alignItems='center'>
 				<Grid2 size={!isMd ? 'grow' : 12}>
 					<Paper component='form' sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}>

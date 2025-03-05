@@ -123,7 +123,7 @@ function TikTok({ tool }: { tool: Tool }) {
 
 	// https://www.tiktok.com/@claireedery/video/7466121696836160774
 	return (
-		<Container maxWidth='sm' sx={{ mt: 2 }}>
+		<Container maxWidth='sm'>
 			<ToolTitle tool={tool} />
 			<TextField
 				label='Enter TikTok URL'

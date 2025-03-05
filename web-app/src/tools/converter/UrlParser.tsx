@@ -82,9 +82,8 @@ function UrlParser({ tool }: { tool: Tool }) {
 	};
 
 	return (
-		<Container maxWidth='md' sx={{ mt: 2 }}>
+		<Container maxWidth='md'>
 			<ToolTitle tool={tool} />
-			<Box sx={{ mt: 2 }} />
 			<Grid2 container spacing={2}>
 				<Grid2 size={{ xs: 12 }}>
 					<TextField

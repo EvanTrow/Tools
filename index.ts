@@ -13,6 +13,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { downloaderRoutes } from './services/Downloaders';
+import { converterRoutes } from './services/Converters';
 
 // logging
 const console = createLogger('Server');
@@ -65,13 +66,14 @@ app.use(
 	})
 );
 
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '/dist')));
 
 // Mount the routes
 app.use('/api/downloader', downloaderRoutes);
+app.use('/api/converter', converterRoutes);
 // app.use('/api/admin', adminRoutes);
 // app.use('/api/search', searchService);
 // app.use('/api/snahp', snahpRoutes);

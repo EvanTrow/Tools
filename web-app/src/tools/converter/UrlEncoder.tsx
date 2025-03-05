@@ -11,9 +11,8 @@ function UrlEncoder({ tool }: { tool: Tool }) {
 	const [encoded, setEncoded] = useState('');
 
 	return (
-		<Container maxWidth='md' sx={{ mt: 2 }}>
+		<Container maxWidth='md'>
 			<ToolTitle tool={tool} />
-			<Box sx={{ mt: 2 }} />
 			<Grid2 container spacing={2} direction={{ xs: 'column', md: 'row' }}>
 				<Grid2 size={{ xs: 12 }}>
 					<TextField
