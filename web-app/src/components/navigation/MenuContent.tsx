@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import { Stack, List, ListItem, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, useTheme, ListSubheader, TextField, Typography } from '@mui/material';
 import { HomeRounded } from '@mui/icons-material';
 
-import { toolSections } from '../../Router';
+import AllTools from '../../tools/AllTools';
 import { useGetPinnedTools } from '../../data/usePinnedToosl';
 
 export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () => void; open: boolean | undefined }) {
@@ -22,23 +22,21 @@ export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () =
 			threshold: 0.3,
 		};
 		return new Fuse(
-			toolSections.flatMap((section) => section.tools),
+			AllTools.flatMap((section) => section.tools),
 			options
 		);
 	}, []);
 
 	const filteredSections = useMemo(() => {
 		const query = searchQuery.trim().toLowerCase();
-		if (!query) return toolSections;
+		if (!query) return AllTools;
 
 		const result = fuse.search(query).map(({ item }) => item);
 
-		return toolSections
-			.map((section) => ({
-				...section,
-				tools: section.tools.filter((tool) => result.includes(tool)),
-			}))
-			.filter((section) => section.title.toLowerCase().includes(query) || section.tools.length > 0);
+		return AllTools.map((section) => ({
+			...section,
+			tools: section.tools.filter((tool) => result.includes(tool)),
+		})).filter((section) => section.title.toLowerCase().includes(query) || section.tools.length > 0);
 	}, [searchQuery, fuse]);
 
 	return (
@@ -86,7 +84,7 @@ export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () =
 
 				{searchQuery.trim().length > 0 && (
 					<Typography variant='caption' color='text.secondary' sx={{ px: 1 }}>
-						{filteredSections.reduce((acc, section) => acc + section.tools.length, 0)} of {toolSections.reduce((acc, section) => acc + section.tools.length, 0)} tools found
+						{filteredSections.reduce((acc, section) => acc + section.tools.length, 0)} of {AllTools.reduce((acc, section) => acc + section.tools.length, 0)} tools found
 					</Typography>
 				)}
 
@@ -100,7 +98,7 @@ export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () =
 						}
 					>
 						{pinnedTools.map((toolPath) => {
-							const tool = toolSections.flatMap((section) => section.tools).find((t) => t.path === toolPath);
+							const tool = AllTools.flatMap((section) => section.tools).find((t) => t.path === toolPath);
 
 							if (!tool) return null;
 							return (

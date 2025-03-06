@@ -1,11 +1,22 @@
 import { useState, useEffect } from 'react';
 import { TextField, Container, Box, Grid2, Divider, Button, IconButton } from '@mui/material';
 import ToolTitle from '../../components/ToolTitle';
-import { Tool } from '../../Router';
+import { Tool } from '../AllTools';
 import { useSnackbar } from 'notistack';
 import { Add, Delete } from '@mui/icons-material';
+import SvgRepo from '../../components/SvgRepo';
 
-function UrlParser({ tool }: { tool: Tool }) {
+export const tool: Tool = {
+	title: 'URL Parser',
+	pageTitle: 'URL Parser',
+	description: 'Parse and edit URL parts',
+	path: '/converter/url-parser',
+	page: UrlParser,
+	icon: <SvgRepo url='https://www.svgrepo.com/show/452391/url-parameter.svg' removeColor={['#1F2328']} />,
+};
+export default tool;
+
+function UrlParser() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [url, setUrl] = useState('https://me:pwd@localhost:3000/url-parser?key1=value&key2=value2#the-hash');
@@ -159,5 +170,3 @@ function UrlParser({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default UrlParser;

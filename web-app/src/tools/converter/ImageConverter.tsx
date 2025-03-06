@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { Button, Typography, Container, MenuItem, Grid2, Card, CardHeader, IconButton, Select, FormControl, InputLabel, Stack, LinearProgress, Collapse, Alert, Box } from '@mui/material';
-import { Close, Download, Upload } from '@mui/icons-material';
+import { Close, Download, Upload, Image } from '@mui/icons-material';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
-import { Tool } from '../../Router';
+import { Tool } from '../AllTools';
 import ToolTitle from '../../components/ToolTitle';
 
-function ImageConverter({ tool }: { tool: Tool }) {
+export const tool: Tool = {
+	title: 'Image Converter',
+	pageTitle: 'Image Converter',
+	description: 'Convert images between different formats',
+	path: '/converter/image-converter',
+	page: ImageConverter,
+	icon: <Image />,
+};
+export default tool;
+
+function ImageConverter() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [loading, setLoading] = useState(false);
@@ -85,7 +95,7 @@ function ImageConverter({ tool }: { tool: Tool }) {
 
 			<Grid2 container spacing={2}>
 				<Grid2 size={12}>
-					<FormControl fullWidth>
+					<FormControl fullWidth disabled={loading}>
 						<InputLabel>Convert To</InputLabel>
 						<Select value={convertTo} label='Convert To' onChange={(e) => setConvertTo(e.target.value)}>
 							{formats.map((format) => (
@@ -97,7 +107,7 @@ function ImageConverter({ tool }: { tool: Tool }) {
 					</FormControl>
 				</Grid2>
 				<Grid2 size={12}>
-					<Button variant='contained' component='label' fullWidth endIcon={<Upload />}>
+					<Button variant='contained' component='label' fullWidth endIcon={<Upload />} disabled={loading}>
 						Upload Image
 						<input type='file' accept='.png,.jpg,.jpeg,.gif,.bmp,.tiff,.ico,.webp,.heic' hidden onChange={handleFileChange} />
 					</Button>
@@ -154,5 +164,3 @@ function ImageConverter({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default ImageConverter;

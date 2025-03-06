@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Box } from '@mui/material';
-import { Tool } from '../Router';
+import { Tool } from '../tools/AllTools';
 
 function ToolTitle({ tool }: { tool: Tool }) {
 	return (

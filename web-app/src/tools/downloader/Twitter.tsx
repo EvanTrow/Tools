@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Container, CircularProgress, Card, CardContent, Avatar, CardHeader, Divider, Stack } from '@mui/material';
 import { TwitterDownload } from '../../types/DownloadsTypes';
-import { Download } from '@mui/icons-material';
+import { Download, Twitter as TwitterIcon } from '@mui/icons-material';
 import ToolTitle from '../../components/ToolTitle';
-import { Tool } from '../../Router';
+import { Tool } from '../AllTools';
 import { makeFilenameSafe } from './YouTube';
 
 import '@vidstack/react/player/styles/default/theme.css';
@@ -13,21 +13,18 @@ import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
 import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 import { useSnackbar } from 'notistack';
 
-function Twitter({ tool }: { tool: Tool }) {
+export const tool: Tool = {
+	title: 'Twitter',
+	pageTitle: 'Twitter Downloader',
+	description: 'Download videos from Twitter',
+	path: '/downloader/twitter',
+	page: Twitter,
+	icon: <TwitterIcon />,
+};
+export default tool;
+
+function Twitter() {
 	const { enqueueSnackbar } = useSnackbar();
-
-	const [open, setOpen] = React.useState(false);
-	const anchorRef = React.useRef<HTMLDivElement>(null);
-	const handleToggle = () => {
-		setOpen((prevOpen) => !prevOpen);
-	};
-	const handleClose = (event: Event) => {
-		if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
-			return;
-		}
-
-		setOpen(false);
-	};
 
 	const [url, setUrl] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -125,5 +122,3 @@ function Twitter({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default Twitter;

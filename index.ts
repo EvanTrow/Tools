@@ -12,33 +12,12 @@ import { Server } from 'socket.io';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { downloaderRoutes } from './services/Downloaders';
-import { converterRoutes } from './services/Converters';
 
 // logging
 const console = createLogger('Server');
 
 // get config path
 require('dotenv').config();
-
-// console.log('Config path:', configPath);
-
-// import { authenticate, authenticateSocket } from './authenticate';
-// import { connected } from './services/databaseService';
-
-// import { userRoutes } from './services/userService';
-// import { adminRoutes } from './services/adminService';
-// import { initializeUserStatusService } from './services/userStatusService';
-// import { searchService } from './services/searchService';
-// import { requestRoutes } from './services/requestService';
-// import { plexRoutes } from './services/plexService';
-// import { openSubtitlesRoutes } from './services/openSubtitlesService';
-// import { megaRoutes } from './services/megaService';
-// import { downloadRoutes } from './services/downloadService';
-// import { fileSystemRoutes } from './services/fileSystemService';
-// import { utilRoutes } from './services/utilService';
-// import { pfSenseRoutes } from './services/pfSenseService';
-// import { snahpRoutes } from './services/snahpService';
 
 export const REX_FILES_ROOT = '/rex';
 export const rexRootFolderExists = (): boolean => fs.existsSync(REX_FILES_ROOT);
@@ -72,37 +51,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/dist')));
 
 // Mount the routes
-app.use('/api/downloader', downloaderRoutes);
-app.use('/api/converter', converterRoutes);
-// app.use('/api/admin', adminRoutes);
-// app.use('/api/search', searchService);
-// app.use('/api/snahp', snahpRoutes);
-// app.use('/api/requests', requestRoutes);
-// app.use('/api/plex', plexRoutes);
-// app.use('/api/opensubtitles', openSubtitlesRoutes);
-// app.use('/api/mega', megaRoutes);
-// app.use('/api/downloads', downloadRoutes);
-// app.use('/api/pfsense', pfSenseRoutes);
-// app.use('/api/fs', fileSystemRoutes);
-// app.use('/api/util', utilRoutes);
-
-// Middleware to ensure trailing slash for '/vnc' route
-// app.use('/api/vnc', authenticate);
-app.use('/api/vnc', (req, res, next) => {
-	if (req.originalUrl === '/api/vnc') return res.redirect(301, req.originalUrl + '/');
-	next();
-});
-app.use(
-	'/api/vnc',
-	createProxyMiddleware({
-		target: process.env.VNC_URL ? String(process.env.VNC_URL) : 'http://localhost:5800', // The target site you're proxying to
-		changeOrigin: true, // Needed for virtual hosted sites
-		ws: true, // Enable WebSocket proxying
-		pathRewrite: {
-			'^/api/vnc/': '/', // Remove '/vnc/' from the path before proxying
-		},
-	})
-);
+const servicesDir = path.join(__dirname, 'services');
+if (fs.existsSync(servicesDir)) {
+	fs.readdirSync(servicesDir).forEach((file) => {
+		try {
+			const name = path.parse(file).name;
+			const service = require(path.join(servicesDir, file)).service;
+			app.use(service.path, service.router);
+			console.log(`Service Loaded: ${name} > ${service.path}`);
+		} catch (error) {
+			console.error(`Failed to load service: ${file}:`, error);
+			return;
+		}
+	});
+}
 
 // Handle other routes
 app.get('*', (req, res) => {

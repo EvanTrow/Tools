@@ -2,12 +2,22 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Container, CircularProgress, Card, CardContent, CardMedia, Avatar, CardHeader, Divider, Box, Stack, LinearProgress } from '@mui/material';
 import { YouTubeDownload, YouTubeDownloadFormat } from '../../types/DownloadsTypes';
-import { Download } from '@mui/icons-material';
+import { Download, YouTube } from '@mui/icons-material';
 import ToolTitle from '../../components/ToolTitle';
-import { Tool } from '../../Router';
+import { Tool } from '../AllTools';
 import { useSnackbar } from 'notistack';
 
-function Youtube({ tool }: { tool: Tool }) {
+const tool: Tool = {
+	title: 'YouTube',
+	pageTitle: 'YouTube Downloader',
+	description: 'Download videos from YouTube',
+	path: '/downloader/youtube',
+	page: Youtube,
+	icon: <YouTube />,
+};
+export default tool;
+
+function Youtube() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [url, setUrl] = useState('');
@@ -135,8 +145,6 @@ function Youtube({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default Youtube;
 
 export function formatVideoDuration(seconds: number): string {
 	if (seconds < 0) throw new Error('Seconds cannot be negative');

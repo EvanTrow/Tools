@@ -22,7 +22,7 @@ import {
 import { TikTokDownload } from '../../types/DownloadsTypes';
 import { Download, ArrowDropDown, MusicNote, ContentCopy } from '@mui/icons-material';
 import ToolTitle from '../../components/ToolTitle';
-import { Tool } from '../../Router';
+import { Tool } from '../AllTools';
 import { formatVideoDuration } from './YouTube';
 
 import '@vidstack/react/player/styles/default/theme.css';
@@ -30,8 +30,19 @@ import '@vidstack/react/player/styles/default/layouts/video.css';
 import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
 import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 import { useSnackbar } from 'notistack';
+import SvgRepo from '../../components/SvgRepo';
 
-function TikTok({ tool }: { tool: Tool }) {
+export const tool: Tool = {
+	title: 'TikTok',
+	pageTitle: 'TikTok Downloader',
+	description: 'Download videos from TikTok',
+	path: '/downloader/tiktok',
+	page: TikTok,
+	icon: <SvgRepo url='https://www.svgrepo.com/show/473806/tiktok.svg' padding={0.25} />,
+};
+export default tool;
+
+function TikTok() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [open, setOpen] = React.useState(false);
@@ -218,5 +229,3 @@ function TikTok({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default TikTok;

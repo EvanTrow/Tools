@@ -1,10 +1,21 @@
 import { useState } from 'react';
 import { TextField, Container, Box, Grid2, Divider } from '@mui/material';
 import ToolTitle from '../../components/ToolTitle';
-import { Tool } from '../../Router';
+import { Tool } from '../AllTools';
 import { useSnackbar } from 'notistack';
+import { Link } from '@mui/icons-material';
 
-function UrlEncoder({ tool }: { tool: Tool }) {
+export const tool: Tool = {
+	title: 'URL Encoder/Decoder',
+	pageTitle: 'URL Encoder/Decoder',
+	description: 'Convert text to and from URL encoding',
+	path: '/converter/url-encoder',
+	page: UrlEncoder,
+	icon: <Link />,
+};
+export default tool;
+
+function UrlEncoder() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [text, setText] = useState('');
@@ -59,5 +70,3 @@ function UrlEncoder({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default UrlEncoder;

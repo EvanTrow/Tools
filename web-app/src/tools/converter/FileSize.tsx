@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
 import { Grid2, Container, FormControl, Select, MenuItem, Box, Typography, SelectChangeEvent, Divider, InputBase, Paper, useMediaQuery, useTheme } from '@mui/material';
 import ToolTitle from '../../components/ToolTitle';
-import { Tool } from '../../Router';
+import { Tool } from '../AllTools';
+import SvgRepo from '../../components/SvgRepo';
+
+const tool: Tool = {
+	title: 'File Size Converter',
+	pageTitle: 'File Size Converter',
+	description: 'Convert file sizes between different units',
+	path: '/converter/filesize',
+	page: FileSize,
+	icon: <SvgRepo url='https://www.svgrepo.com/show/532782/file-info-alt-1.svg' padding={0.25} />,
+};
+export default tool;
 
 const units = [
 	'Bit',
@@ -53,7 +64,7 @@ const conversionRates: { [key: string]: number } = {
 	Pebibyte: 9007199254740992,
 };
 
-function FileSize({ tool }: { tool: Tool }) {
+function FileSize() {
 	const theme = useTheme();
 	const isMd = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -141,5 +152,3 @@ function FileSize({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default FileSize;

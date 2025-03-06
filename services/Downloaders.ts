@@ -177,7 +177,10 @@ router.post('/twitter', async (req, res) => {
 	}
 });
 
-export const downloaderRoutes = router;
+export const service = {
+	path: '/api/downloader',
+	router: router,
+};
 
 export function makeFilenameSafe(title: string, replacement: string = '_'): string {
 	// Remove leading/trailing whitespace

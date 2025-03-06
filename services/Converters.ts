@@ -142,4 +142,7 @@ router.post('/image/:convertTo', async (req, res) => {
 	}
 });
 
-export const converterRoutes = router;
+export const service = {
+	path: '/api/downloader',
+	router: router,
+};

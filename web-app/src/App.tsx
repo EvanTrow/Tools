@@ -1,6 +1,5 @@
 import { Grid2, Card, Typography, CardActionArea, Container, Box, Divider, IconButton, CardHeader } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { toolSections } from './Router';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useGetPinnedTools, useSetPinnedTools } from './data/usePinnedToosl';
 import { CSS } from '@dnd-kit/utilities';
@@ -8,12 +7,14 @@ import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@d
 import { DndContext, closestCenter, DragOverlay, useSensors, useSensor, DragEndEvent, DragStartEvent, MouseSensor, TouchSensor } from '@dnd-kit/core';
 import { useCallback, useEffect, useState } from 'react';
 
+import AllTools from './tools/AllTools';
+
 const SortableItem = (props: any) => {
 	const navigate = useNavigate();
 
 	const { isDragging, attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id });
 
-	const tool = toolSections.flatMap((section) => section.tools).find((tool) => tool.path === props.id);
+	const tool = AllTools.flatMap((section) => section.tools).find((tool) => tool.path === props.id);
 	if (!tool) return null;
 	return (
 		<Grid2 size={{ xs: 12, sm: 6, md: 4 }} ref={setNodeRef} {...attributes} {...listeners}>
@@ -137,7 +138,7 @@ function Home() {
 				</Box>
 			)}
 
-			{toolSections.map((section) => (
+			{AllTools.map((section) => (
 				<Box key={section.title} sx={{ mt: 2 }}>
 					<Typography variant='h5' gutterBottom>
 						{section.title}

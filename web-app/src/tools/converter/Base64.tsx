@@ -1,10 +1,21 @@
 import { useState } from 'react';
 import { TextField, Container, Box, Grid2, Divider } from '@mui/material';
 import ToolTitle from '../../components/ToolTitle';
-import { Tool } from '../../Router';
 import { useSnackbar } from 'notistack';
+import SvgRepo from '../../components/SvgRepo';
+import { Tool } from '../AllTools';
 
-function Base64({ tool }: { tool: Tool }) {
+const tool: Tool = {
+	title: 'Base64',
+	pageTitle: 'Base64 Encoder/Decoder',
+	description: 'Convert text to and from base64',
+	path: '/converter/base64',
+	page: Base64,
+	icon: <SvgRepo url='/icons/base64.svg' padding={0.25} cors={false} />,
+};
+export default tool;
+
+function Base64() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [text, setText] = useState('');
@@ -59,5 +70,3 @@ function Base64({ tool }: { tool: Tool }) {
 		</Container>
 	);
 }
-
-export default Base64;
