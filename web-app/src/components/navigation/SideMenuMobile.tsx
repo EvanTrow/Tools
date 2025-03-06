@@ -2,7 +2,6 @@ import React from 'react';
 
 import MenuContent from './MenuContent';
 import { Drawer, drawerClasses, Stack, Avatar, Typography, Divider } from '@mui/material';
-import { useSocket } from '../../Context/SocketContext';
 
 interface SideMenuMobileProps {
 	open: boolean | undefined;
@@ -10,8 +9,6 @@ interface SideMenuMobileProps {
 }
 
 export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
-	const { connected: socketConnected } = useSocket();
-
 	return (
 		<Drawer
 			anchor='right'

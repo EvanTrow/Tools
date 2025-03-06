@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { useSocket } from '../../Context/SocketContext';
-
 import { styled } from '@mui/material/styles';
 import {
 	AppBar as MuiAppBar,
@@ -116,7 +114,6 @@ const Navigation: React.FC<{ children: JSX.Element }> = ({ children }) => {
 	const theme = useTheme();
 
 	const queryClient = useQueryClient();
-	const { socket, connected: socketConnected } = useSocket();
 
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	React.useEffect(() => {

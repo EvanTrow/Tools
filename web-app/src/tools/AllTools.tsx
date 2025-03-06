@@ -18,19 +18,28 @@ export type Tool = {
 };
 
 context.keys().forEach((key) => {
-	if (key === './AllTools.tsx') return;
-	const module = context(key);
-	if (module.default) {
-		const sectionName = key.split('/')[1];
-		const section = AllTools.find((section) => section.title === sectionName);
-		if (section) {
-			section.tools.push(module.default);
-		} else {
-			AllTools.push({
-				title: sectionName,
-				tools: [module.default],
-			});
+	try {
+		if (key === './AllTools.tsx') return;
+		const module = context(key);
+		if (module.default) {
+			if (!module.default.title || !module.default.pageTitle || !module.default.description || !module.default.path || !module.default.page || !module.default.icon) {
+				console.error('Invalid tool:', module.default);
+				return;
+			}
+
+			const sectionName = key.split('/')[1];
+			const section = AllTools.find((section) => section.title === sectionName);
+			if (section) {
+				section.tools.push(module.default);
+			} else {
+				AllTools.push({
+					title: sectionName,
+					tools: [module.default],
+				});
+			}
 		}
+	} catch (error) {
+		console.error('Error loading tool:', error);
 	}
 });
 

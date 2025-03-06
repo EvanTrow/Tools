@@ -30,9 +30,9 @@ root.render(
 		<PreviousRouteProvider>
 			<SnackbarProvider maxSnack={3} autoHideDuration={4000}>
 				<QueryClientProvider client={queryClient}>
-					<SocketProvider>
-						<Theme />
-					</SocketProvider>
+					{/* <SocketProvider> */}
+					<Theme />
+					{/* </SocketProvider> */}
 				</QueryClientProvider>
 			</SnackbarProvider>
 		</PreviousRouteProvider>
