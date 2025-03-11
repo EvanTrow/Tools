@@ -1,4 +1,4 @@
-import { Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Route, Routes } from 'react-router-dom';
 
 import Navigation from './components/navigation/Navigation';
@@ -17,15 +17,16 @@ export const NotFound = () => {
 };
 
 function Router() {
-	const theme = useTheme();
-	const isMd = useMediaQuery(theme.breakpoints.down('md'));
-
 	return (
-		<Routes>
-			<Route path='/' element={<Navigation children={<App />} />} />
-			{AllTools.map((section) => section.tools.map((tool) => <Route key={tool.path} path={tool.path} element={<Navigation children={<tool.page />} />} />))}
-			<Route path='*' element={<Navigation children={<NotFound />} />} />
-		</Routes>
+		<Navigation
+			children={
+				<Routes>
+					<Route path='/' element={<App />} />
+					{AllTools.map((section) => section.tools.map((tool) => <Route key={tool.path} path={tool.path} element={<tool.page />} />))}
+					<Route path='*' element={<NotFound />} />
+				</Routes>
+			}
+		/>
 	);
 }
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createLogger } from '../helpers';
+import { createLogger } from '@root/helpers';
 
 import sharp from 'sharp';
 

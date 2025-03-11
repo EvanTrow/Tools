@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { Stack, List, ListItem, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, useTheme, ListSubheader, TextField, Typography } from '@mui/material';
 import { HomeRounded } from '@mui/icons-material';
@@ -9,6 +9,8 @@ import AllTools from '../../tools/AllTools';
 import { useGetPinnedTools } from '../../data/usePinnedToosl';
 
 export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () => void; open: boolean | undefined }) {
+	const location = useLocation();
+
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [searchQuery, setSearchQuery] = useState('');
@@ -54,7 +56,7 @@ export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () =
 					{/* Home */}
 					<ListItem disablePadding sx={{ display: 'block' }}>
 						<ListItemButton
-							selected={window.location.pathname === '/'}
+							selected={location.pathname === '/'}
 							onClick={() => {
 								isMobile && toggleDrawer();
 							}}
@@ -104,7 +106,7 @@ export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () =
 							return (
 								<ListItem key={tool.path} disablePadding sx={{ display: 'block' }}>
 									<ListItemButton
-										selected={window.location.pathname === tool.path}
+										selected={location.pathname === tool.path}
 										onClick={() => {
 											isMobile && toggleDrawer();
 										}}
@@ -133,7 +135,7 @@ export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () =
 						{section.tools.map((tool) => (
 							<ListItem key={tool.path} disablePadding sx={{ display: 'block' }}>
 								<ListItemButton
-									selected={window.location.pathname === tool.path}
+									selected={location.pathname === tool.path}
 									onClick={() => {
 										isMobile && toggleDrawer();
 									}}

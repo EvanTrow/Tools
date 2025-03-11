@@ -1,11 +1,13 @@
 import express from 'express';
-import { createLogger } from '../helpers';
+import { createLogger } from '@root/helpers';
 import axios from 'axios';
 import ytdl from '@distube/ytdl-core';
 import { spawn } from 'child_process';
 import { Writable } from 'stream';
 import { TwitterDL } from 'twitter-downloader';
 import { TwitterDownload } from '../web-app/src/types/DownloadsTypes';
+import contentDisposition from 'content-disposition';
+const mpdParser = require('mpd-parser');
 
 // logging
 const console = createLogger('Downloaders');
@@ -101,7 +103,7 @@ router.post('/youtube', async (req, res) => {
 			// Get the best available video and audio streams from YouTube
 			const videoStream = ytdl(url, { quality: quality });
 			const audioStream = ytdl(url, { quality: 'highestaudio' });
-			res.setHeader('Content-Disposition', `attachment; filename="${makeFilenameSafe(info.videoDetails.title)}.mp4"`);
+			res.setHeader('Content-Disposition', `attachment; filename="${contentDisposition(makeFilenameSafe(info.videoDetails.title))}.mp4"`);
 			res.setHeader('Content-Type', 'video/mp4');
 
 			const ffmpegProcess = spawn(
@@ -177,6 +179,86 @@ router.post('/twitter', async (req, res) => {
 	}
 });
 
+router.post('/reddit', async (req, res) => {
+	try {
+		const url = req.body?.url as string;
+		const download = req.body?.download as boolean;
+		if (!url) {
+			return res.status(400).json({ error: 'Missing url parameter' });
+		}
+		console.log('Downloading Reddit video:', url);
+
+		// Convert Reddit post URL to JSON API URL
+		const jsonUrl = url.endsWith('/') ? `${url}.json` : `${url}/.json`;
+		const { data } = await axios.get(jsonUrl, {
+			headers: { 'User-Agent': 'Mozilla/5.0' },
+		});
+
+		// Navigate JSON structure to find video URL
+		const post = data[0].data.children[0].data;
+		if (!post || !post.secure_media || !post.secure_media.reddit_video) {
+			return res.status(404).json({ error: 'No video found in this post' });
+		}
+
+		if (!download) {
+			return res.send(post);
+		} else {
+			const dashContent = (await axios.get(post.secure_media.reddit_video.dash_url, { responseType: 'text' })).data;
+			const parsedMpd = mpdParser.parse(dashContent);
+
+			const baseUrl = post.url;
+			const videoUrl = baseUrl + parsedMpd.playlists.sort((a: any, b: any) => b.attributes.BANDWIDTH - a.attributes.BANDWIDTH)[0].resolvedUri;
+			const audioUrl = baseUrl + parsedMpd.mediaGroups.AUDIO.audio.main.playlists.sort((a: any, b: any) => b.attributes.BANDWIDTH - a.attributes.BANDWIDTH)[0].resolvedUri;
+
+			const ffmpegProcess = spawn(
+				'ffmpeg',
+				[
+					'-y',
+					'-i',
+					videoUrl, // video input
+					'-i',
+					audioUrl, // audio input
+					'-c:v',
+					'copy',
+					'-c:a',
+					'aac',
+					'-movflags',
+					'frag_keyframe+empty_moov',
+					'-f',
+					'mp4',
+					'pipe:1',
+				],
+				{
+					stdio: [
+						'inherit', // ffmpeg's own stdin
+						'pipe', // ffmpeg's stdout
+						'inherit', // ffmpeg's stderr (so we see any errors in console)
+					],
+				}
+			);
+
+			// Set response headers
+			res.setHeader('Content-Disposition', `attachment; filename="${contentDisposition(makeFilenameSafe(post.title))}.mp4"`);
+			res.setHeader('Content-Type', 'video/mp4');
+
+			// Pipe the final MP4 output from ffmpeg straight to the client
+			if (ffmpegProcess.stdout) {
+				ffmpegProcess.stdout.pipe(res);
+			} else {
+				console.error('FFmpeg stdout is null');
+				res.status(500).json({ error: 'Internal server error' });
+			}
+
+			ffmpegProcess.on('close', (code) => {
+				console.log(`FFmpeg closed, exit code: ${code}`);
+			});
+		}
+	} catch (error) {
+		console.error('Error downloading Reddit video:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
 export const service = {
 	path: '/api/downloader',
 	router: router,
@@ -186,8 +268,8 @@ export function makeFilenameSafe(title: string, replacement: string = '_'): stri
 	// Remove leading/trailing whitespace
 	let safeTitle = title.trim();
 
-	// Define characters that are not allowed in filenames across different OS
-	const invalidChars = /[<>:"/\\|?*\x00-\x1F]/g; // Windows & Unix illegal characters
+	// Define characters that are not allowed in filenames across different OS and Content-Disposition header
+	const invalidChars = /[<>:"/\\|?*\x00-\x1F;=]/g; // Added ';' and '=' for Content-Disposition header
 	const reservedNames = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i; // Windows reserved names
 	const trailingDotsAndSpaces = /[. ]+$/; // Windows doesn't allow trailing spaces or dots
 
@@ -201,6 +283,8 @@ export function makeFilenameSafe(title: string, replacement: string = '_'): stri
 
 	// Remove trailing dots and spaces
 	safeTitle = safeTitle.replace(trailingDotsAndSpaces, '');
+
+	safeTitle = safeTitle.replace(/[<>:"/\\|?*]+/g, '').replace(/&+/g, 'and');
 
 	// Ensure filename isn't empty
 	return safeTitle.length > 0 ? safeTitle : 'untitled';
