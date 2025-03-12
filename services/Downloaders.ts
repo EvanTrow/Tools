@@ -1,7 +1,11 @@
 import express from 'express';
 import { createLogger } from '@root/helpers';
 import axios from 'axios';
+import fs from 'fs';
 import ytdl from '@distube/ytdl-core';
+import scdl from 'soundcloud-downloader';
+import Spotify from '@root/lib/spotifydl-core';
+
 import { spawn } from 'child_process';
 import { Writable } from 'stream';
 import { TwitterDL } from 'twitter-downloader';
@@ -14,6 +18,46 @@ const console = createLogger('Downloaders');
 
 const router = express.Router();
 
+/**
+ * @openapi
+ * /api/downloader/svgRepo:
+ *   get:
+ *     summary: Fetches an SVG from a given URL.
+ *     tags:
+ *       - Downloader
+ *     parameters:
+ *       - in: query
+ *         name: url
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The URL of the SVG to fetch.
+ *     responses:
+ *       200:
+ *         description: SVG content fetched successfully.
+ *         content:
+ *           image/svg+xml:
+ *             schema:
+ *               type: string
+ *       400:
+ *         description: Missing or invalid URL parameter.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.get('/svgRepo', async (req, res) => {
 	try {
 		const svgUrl = req.query.url as string;
@@ -36,6 +80,49 @@ router.get('/svgRepo', async (req, res) => {
 	}
 });
 
+/**
+ * @openapi
+ * /api/downloader/tiktok:
+ *   post:
+ *     summary: Downloads a TikTok video from a given URL.
+ *     tags:
+ *       - Downloader
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 description: The URL of the TikTok video to download.
+ *     responses:
+ *       200:
+ *         description: TikTok video data fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TikTokDownload'
+ *       400:
+ *         description: Missing or invalid URL parameter.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.post('/tiktok', async (req, res) => {
 	try {
 		const url = req.body?.url as string;
@@ -86,6 +173,57 @@ router.post('/tiktok', async (req, res) => {
 	}
 });
 
+/**
+ * @swagger
+ * /api/downloader/youtube:
+ *   post:
+ *     summary: Downloads a YouTube video from a given URL. FFmpeg is used to merge video and audio streams.
+ *     tags:
+ *       - Downloader
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 description: The URL of the YouTube video to download.
+ *               quality:
+ *                 type: string
+ *                 description: The desired quality of the video.
+ *                 required: false
+ *     responses:
+ *       200:
+ *         description: YouTube video data fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/YouTubeDownload'
+ *           video/mp4:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: Missing or invalid URL parameter.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.post('/youtube', async (req, res) => {
 	try {
 		const url = req.body?.url as string;
@@ -159,6 +297,49 @@ router.post('/youtube', async (req, res) => {
 	}
 });
 
+/**
+ * @openapi
+ * /api/downloader/twitter:
+ *   post:
+ *     summary: Downloads a Twitter video from a given URL.
+ *     tags:
+ *       - Downloader
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 description: The URL of the Twitter video to download.
+ *     responses:
+ *       200:
+ *         description: Twitter video data fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TwitterDownload'
+ *       400:
+ *         description: Missing or invalid URL parameter.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.post('/twitter', async (req, res) => {
 	try {
 		const url = req.body?.url as string;
@@ -179,6 +360,66 @@ router.post('/twitter', async (req, res) => {
 	}
 });
 
+/**
+ * @openapi
+ * /api/downloader/reddit:
+ *   post:
+ *     summary: Downloads a Reddit video from a given URL. FFmpeg is used to merge video and audio streams.
+ *     tags:
+ *       - Downloader
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 description: The URL of the Reddit video to download.
+ *               download:
+ *                 type: boolean
+ *                 description: Whether to download the video or just return the post data.
+ *                 required: false
+ *     responses:
+ *       200:
+ *         description: Reddit video data fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RedditDownload'
+ *           video/mp4:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: Missing or invalid URL parameter.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       404:
+ *         description: No video found in the Reddit post.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.post('/reddit', async (req, res) => {
 	try {
 		const url = req.body?.url as string;
@@ -255,6 +496,151 @@ router.post('/reddit', async (req, res) => {
 		}
 	} catch (error) {
 		console.error('Error downloading Reddit video:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+/**
+ * @swagger
+ * /api/downloader/music:
+ *   post:
+ *     summary: Downloads music from Spotify, SoundCloud or YouTube.
+ *     tags:
+ *       - Downloader
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 description: The URL of the Spotify, SoundCloud or YouTube music to download.
+ *               download:
+ *                 type: boolean
+ *                 description: Whether to download the music or just return the post data.
+ *                 required: false
+ *     responses:
+ *       200:
+ *         description: Spotify, SoundCloud or YouTube music data fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   description: Title of the post.
+ *                 author:
+ *                   type: string
+ *                   description: Author of the post.
+ *           audio/mp3:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: Missing or invalid URL parameter.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+router.post('/music', async (req, res) => {
+	try {
+		const url = req.body?.url as string;
+		const download = req.body?.download as boolean;
+		if (!url) {
+			return res.status(400).json({ error: 'Missing url parameter' });
+		}
+
+		const credentials = {
+			clientId: process.env.SPOTIFY_CLIENT_ID ?? '',
+			clientSecret: process.env.SPOTIFY_CLIENT_SECRET ?? '',
+		};
+		const spotify = new Spotify(credentials);
+
+		let host,
+			ytInfo,
+			scInfo,
+			spInfo = null;
+		try {
+			ytInfo = await ytdl.getInfo(url);
+			host = 'youtube';
+		} catch {}
+		try {
+			scInfo = await scdl.getInfo(url);
+			host = 'soundcloud';
+		} catch {}
+		try {
+			spInfo = await spotify.getTrack(url);
+			host = 'spotify';
+		} catch {}
+		if (!host) {
+			return res.status(400).json({ error: 'Invalid URL host' });
+		}
+		let info = {
+			title: 'music',
+			author: 'unknown',
+		};
+
+		switch (host) {
+			case 'youtube':
+				info = {
+					title: ytInfo?.videoDetails?.title ?? 'music',
+					author: ytInfo?.videoDetails?.author?.name ?? 'unknown',
+				};
+				break;
+			case 'soundcloud':
+				info = {
+					title: scInfo?.title ?? 'music',
+					author: scInfo?.user?.username ?? 'unknown',
+				};
+
+				break;
+			case 'spotify':
+				info = {
+					title: spInfo?.name ?? 'music',
+					author: spInfo?.artists[0] ?? 'unknown',
+				};
+				break;
+		}
+
+		console.log(`Downloading ${host} music: ${info.title} - ${info.author}`, url);
+		if (!download) {
+			return res.send(info);
+		} else {
+			res.setHeader('Content-Disposition', `attachment; filename="${contentDisposition(`${info.title} - ${info.author}`)}.mp3"`);
+			res.setHeader('Content-Type', 'audio/mp3');
+			switch (host) {
+				case 'youtube':
+					ytdl(url, { quality: 'highestaudio' }).pipe(res);
+					break;
+				case 'soundcloud':
+					(await scdl.downloadFormat(url, scdl.FORMATS.MP3)).pipe(res);
+					break;
+				case 'spotify':
+					const spotifyStream = await spotify.downloadTrack(url); // Downloading goes brr brr
+					spotifyStream.pipe(res);
+					break;
+				default:
+					return res.status(400).json({ error: 'Invalid host parameter' });
+			}
+		}
+	} catch (error) {
+		console.error('Error downloading music:', error);
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
 });

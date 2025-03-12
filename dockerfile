@@ -20,7 +20,12 @@ WORKDIR /app
 # Expose http port
 EXPOSE 8080
 
+# Set the environment to production
 ENV NODE_ENV=production
+
+# spotify credentials
+ENV SPOTIFY_CLIENT_ID=your_client_id
+ENV SPOTIFY_CLIENT_SECRET=your_client_secret
 
 VOLUME [ "/app/extensions" ]
 

@@ -16,6 +16,86 @@ const router = express.Router();
 router.use(express.raw({ type: 'image/*', limit: '25mb' })); // Accepts image uploads
 
 router.post('/image/:convertTo', async (req, res) => {
+	/**
+	 * @openapi
+	 * /api/converter/image/{convertTo}:
+	 *   post:
+	 *     summary: Convert an uploaded image to a specified format.
+	 *     tags:
+	 *       - Converter
+	 *     parameters:
+	 *       - in: path
+	 *         name: convertTo
+	 *         required: true
+	 *         schema:
+	 *           type: string
+	 *           enum: [png, jpg, gif, tiff, heic, ico, bmp, webp]
+	 *         description: The format to convert the image to.
+	 *     requestBody:
+	 *       required: true
+	 *       content:
+	 *         image/*:
+	 *           schema:
+	 *             type: string
+	 *             format: binary
+	 *           description: The image file to be converted.
+	 *     responses:
+	 *       200:
+	 *         description: The converted image.
+	 *         content:
+	 *           image/png:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *           image/jpeg:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *           image/gif:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *           image/tiff:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *           image/heif:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *           image/x-icon:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *           image/bmp:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *           image/webp:
+	 *             schema:
+	 *               type: string
+	 *               format: binary
+	 *       400:
+	 *         description: Unsupported format or bad request.
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 error:
+	 *                   type: string
+	 *                   example: Unsupported format.
+	 *       500:
+	 *         description: Internal Server Error.
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 error:
+	 *                   type: string
+	 *                   example: Internal Server Error.
+	 */
 	try {
 		const { convertTo } = req.params;
 
@@ -143,6 +223,6 @@ router.post('/image/:convertTo', async (req, res) => {
 });
 
 export const service = {
-	path: '/api/downloader',
+	path: '/api/converter',
 	router: router,
 };

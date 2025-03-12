@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Container, CircularProgress, Card, CardContent, CardMedia, Avatar, CardHeader, Divider, Box, Stack, LinearProgress } from '@mui/material';
-import { YouTubeDownload, YouTubeDownloadFormat } from '../../types/DownloadsTypes';
+import { YouTubeDownload } from '../../types/DownloadsTypes';
 import { Download, YouTube } from '@mui/icons-material';
 import ToolTitle from '../../components/ToolTitle';
 import { Tool } from '../AllTools';
@@ -68,7 +68,7 @@ function Youtube() {
 		xhr.send(params);
 	}
 
-	const groupByHeight = (formats: YouTubeDownloadFormat[]): Record<number, YouTubeDownloadFormat[]> => {
+	const groupByHeight = (formats: any[]): Record<number, any[]> => {
 		return formats
 			.filter((f) => f.height !== undefined)
 			.reduce((acc, format) => {
@@ -77,7 +77,7 @@ function Youtube() {
 				}
 				acc[format.height ?? 0].push(format);
 				return acc;
-			}, {} as Record<number, YouTubeDownloadFormat[]>);
+			}, {} as Record<number, any[]>);
 	};
 	const groupedFormats = groupByHeight(download?.formats ?? []);
 

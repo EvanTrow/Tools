@@ -10,6 +10,8 @@ import { createLogger } from '@root/helpers';
 import { Server } from 'socket.io';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import swagger from './swagger';
+
 import unzipper from 'unzipper';
 import { Extension } from './web-app/src/types/Types';
 
@@ -152,6 +154,9 @@ const runNpm = (params: string[], cwd: string): Promise<void> => {
 			}
 		});
 	}
+
+	// initialize swagger docs
+	swagger(app);
 
 	// Handle other routes
 	app.get('*', (req, res) => {
