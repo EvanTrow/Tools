@@ -7,6 +7,7 @@ import { Tool } from '../AllTools';
 import { makeFilenameSafe } from './YouTube';
 
 import { useSnackbar } from 'notistack';
+import DownloadAgreement from '../../components/DownloadAgreement';
 
 export const tool: Tool = {
 	title: 'Music',
@@ -74,6 +75,7 @@ function Music() {
 	// https://open.spotify.com/track/2b808IC3KHNMLU5vHjhcjg?si=6a28fb38361346c0
 	return (
 		<Container maxWidth='sm'>
+			<DownloadAgreement />
 			<ToolTitle tool={tool} />
 			<TextField label='Enter YouTube, Spotify or SoundCloud URL' variant='outlined' fullWidth value={url} onChange={(e) => setUrl(e.target.value)} margin='normal' />
 			<Button variant='contained' color='primary' onClick={handleDownload} disabled={loading} fullWidth>

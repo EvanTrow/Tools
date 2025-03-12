@@ -12,6 +12,7 @@ import '@vidstack/react/player/styles/default/layouts/video.css';
 import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
 import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 import { useSnackbar } from 'notistack';
+import DownloadAgreement from '../../components/DownloadAgreement';
 
 export const tool: Tool = {
 	title: 'Twitter',
@@ -69,6 +70,7 @@ function Twitter() {
 	// https://x.com/NoCapMediaa/status/1889570132307153094
 	return (
 		<Container maxWidth='sm'>
+			<DownloadAgreement />
 			<ToolTitle tool={tool} />
 			<TextField
 				label='Enter Twitter URL'

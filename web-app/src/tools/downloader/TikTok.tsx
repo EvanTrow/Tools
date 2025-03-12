@@ -31,6 +31,7 @@ import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
 import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 import { useSnackbar } from 'notistack';
 import SvgRepo from '../../components/SvgRepo';
+import DownloadAgreement from '../../components/DownloadAgreement';
 
 export const tool: Tool = {
 	title: 'TikTok',
@@ -135,6 +136,7 @@ function TikTok() {
 	// https://www.tiktok.com/@claireedery/video/7466121696836160774
 	return (
 		<Container maxWidth='sm'>
+			<DownloadAgreement />
 			<ToolTitle tool={tool} />
 			<TextField
 				label='Enter TikTok URL'

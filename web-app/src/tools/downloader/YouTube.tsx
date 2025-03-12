@@ -6,6 +6,7 @@ import { Download, YouTube } from '@mui/icons-material';
 import ToolTitle from '../../components/ToolTitle';
 import { Tool } from '../AllTools';
 import { useSnackbar } from 'notistack';
+import DownloadAgreement from '../../components/DownloadAgreement';
 
 const tool: Tool = {
 	title: 'YouTube',
@@ -84,6 +85,7 @@ function Youtube() {
 	// https://www.youtube.com/watch?v=udO6bDeIhmM
 	return (
 		<Container maxWidth='sm'>
+			<DownloadAgreement />
 			<ToolTitle tool={tool} />
 			<TextField label='Enter YouTube URL' variant='outlined' fullWidth value={url} onChange={(e) => setUrl(e.target.value)} margin='normal' />
 			<Button variant='contained' color='primary' onClick={handleDownload} disabled={loading} fullWidth>

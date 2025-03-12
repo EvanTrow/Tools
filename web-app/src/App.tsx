@@ -1,7 +1,7 @@
 import { Grid2, Card, Typography, CardActionArea, Container, Box, Divider, IconButton, CardHeader } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
-import { useGetPinnedTools, useSetPinnedTools } from './data/usePinnedToosl';
+import { useGetPinnedTools, useSetPinnedTools } from './data/usePinnedTools';
 import { CSS } from '@dnd-kit/utilities';
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { DndContext, closestCenter, DragOverlay, useSensors, useSensor, DragEndEvent, DragStartEvent, MouseSensor, TouchSensor } from '@dnd-kit/core';

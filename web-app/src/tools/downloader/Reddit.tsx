@@ -12,6 +12,7 @@ import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
 import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 import { makeFilenameSafe } from './YouTube';
 import { RedditDownload } from '../../types/DownloadsTypes';
+import DownloadAgreement from '../../components/DownloadAgreement';
 
 export const tool: Tool = {
 	title: 'Reddit',
@@ -78,6 +79,7 @@ function Reddit() {
 
 	return (
 		<Container maxWidth='sm'>
+			<DownloadAgreement />
 			<ToolTitle tool={tool} />
 			<TextField
 				label='Enter Reddit URL'

@@ -6,7 +6,7 @@ import { Stack, List, ListItem, ListItemButton, ListItemIcon, ListItemText, useM
 import { HomeRounded } from '@mui/icons-material';
 
 import AllTools from '../../tools/AllTools';
-import { useGetPinnedTools } from '../../data/usePinnedToosl';
+import { useGetPinnedTools } from '../../data/usePinnedTools';
 
 export default function MenuContent({ toggleDrawer, open }: { toggleDrawer: () => void; open: boolean | undefined }) {
 	const location = useLocation();
