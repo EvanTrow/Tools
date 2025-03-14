@@ -1,7 +1,6 @@
 import express from 'express';
 import { createLogger } from '@root/helpers';
 import axios from 'axios';
-import fs from 'fs';
 import ytdl from '@distube/ytdl-core';
 import scdl from 'soundcloud-downloader';
 import Spotify from '@root/lib/spotifydl-core';
@@ -11,7 +10,6 @@ import { Writable } from 'stream';
 import { TwitterDL } from 'twitter-downloader';
 import { TwitterDownload } from '../web-app/src/types/DownloadsTypes';
 import contentDisposition from 'content-disposition';
-const mpdParser = require('mpd-parser');
 
 // logging
 const console = createLogger('Downloaders');
@@ -445,11 +443,22 @@ router.post('/reddit', async (req, res) => {
 			return res.send(post);
 		} else {
 			const dashContent = (await axios.get(post.secure_media.reddit_video.dash_url, { responseType: 'text' })).data;
-			const parsedMpd = mpdParser.parse(dashContent);
 
 			const baseUrl = post.url;
-			const videoUrl = baseUrl + parsedMpd.playlists.sort((a: any, b: any) => b.attributes.BANDWIDTH - a.attributes.BANDWIDTH)[0].resolvedUri;
-			const audioUrl = baseUrl + parsedMpd.mediaGroups.AUDIO.audio.main.playlists.sort((a: any, b: any) => b.attributes.BANDWIDTH - a.attributes.BANDWIDTH)[0].resolvedUri;
+			const videoUrl = `${baseUrl}/${
+				dashContent.match(/DASH_\d+\.\w+/g)?.sort((a: any, b: any) => {
+					const aBitrate = parseInt(a.match(/\d+/)?.[0] || '0', 10);
+					const bBitrate = parseInt(b.match(/\d+/)?.[0] || '0', 10);
+					return bBitrate - aBitrate;
+				})[0]
+			}`;
+			const audioUrl = `${baseUrl}/${
+				dashContent.match(/DASH_AUDIO_\d+\.\w+/g)?.sort((a: any, b: any) => {
+					const aBitrate = parseInt(a.match(/\d+/)?.[0] || '0', 10);
+					const bBitrate = parseInt(b.match(/\d+/)?.[0] || '0', 10);
+					return bBitrate - aBitrate;
+				})[0]
+			}`;
 
 			const ffmpegProcess = spawn(
 				'ffmpeg',
