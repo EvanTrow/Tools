@@ -107,10 +107,10 @@ function Youtube() {
 								Duration: {formatVideoDuration(parseInt(download.videoDetails.lengthSeconds))}
 							</Typography>
 							<Typography variant='body2' color='text.secondary'>
-								Views: {parseInt(download.videoDetails.viewCount).toLocaleString()}
+								Views: {parseInt(download?.videoDetails?.viewCount ?? '0').toLocaleString()}
 							</Typography>
 							<Typography variant='body2' color='text.secondary'>
-								Likes: {download.videoDetails.likes.toLocaleString()}
+								Likes: {(download?.videoDetails?.likes ?? 0).toLocaleString()}
 							</Typography>
 						</CardContent>
 						<Box sx={{ p: 1 }}>
